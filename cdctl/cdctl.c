@@ -2,7 +2,7 @@
 	
 vim:ts=4
 
-$Id: cdctl.c,v 1.2 2000-04-11 09:19:58 thalakan Exp $ 
+$Id: cdctl.c,v 1.3 2000-05-05 03:41:10 thalakan Exp $ 
 
 2.0 patches by Andy Thaller <andy_thaller@physik.tu-muenchen.de>
 MSF patches by Jens Axboe <axboe@image.dk>
@@ -47,16 +47,17 @@ FIXME:
 
 int main(int argc, char *argv[]) {
 
-	int ret;
+    int ret;
+    int i;
 	char *arg = "";
 	int done = 0;
-	int cdrom;
+	int cdrom = -1;
 	int option = 0; 
 
 	static char options[] = "ab:cd:eghiklmo::p::rst:u:v::V";
 	static struct option longoptions[] = {
 		{ "pause",			0,	NULL,	'a' },
-        { "speed",          1,  NULL,   'b' },
+		{ "speed",          1,  NULL,   'b' },
 		{ "close",			0,	NULL,	'c' },
 		{ "disc",           1,  NULL,   'd' },
 		{ "eject",			0,	NULL,	'e' },
@@ -83,6 +84,14 @@ int main(int argc, char *argv[]) {
 		{ "autoclose",      1,  NULL,   'u' },
 		{ "volume", 		2,  NULL,   'v' },
 		{ "version",		0,	NULL,	'V' },
+	};
+
+	static struct action actions[] = {
+		{ "eject", cd_eject },
+		{ "shut", cd_close },
+		{ "open", cd_eject },
+		{ "close", cd_close },
+		{ NULL, NULL }
 	};
 
 /*
@@ -120,36 +129,35 @@ int main(int argc, char *argv[]) {
 	optarg = arg;
 
 /*
- * End master initalization
+ * End master initialization, try to find the cdrom device.
+ * In order of priority:
+ *  1: as a command-line argument
+ *  2: as an environment variable
+ *  3: "/dev/cdrom"
+ *   - if *that* fails, turn on DEBUG and start from 3 again
+ *  4: "/dev/scd0"
+ *  5: "/dev/sr0"
  */
-     
-	
-/* Try to find the cdrom device */
-	
-	if(argv[optind] != 0) {
+    if(argv[optind] != NULL) {
 		cdrom = open_cdrom(argv[optind]);
 		if(cdrom == -1) {
 			warn(_("can't open %s"), argv[optind]);
 			return 1;
 		}
-	} else {
-		cdrom = -1;
 	}
-	
 	if(getenv("CDROM") != NULL) {
 		cdrom = open_cdrom(getenv("CDROM"));
 		if(cdrom == -1) {
 			warn(_("can't open %s"), getenv("CDROM"));
 		}
-	} else {
-		cdrom = -1;
 	}
-
 	if(cdrom == -1) {
 		cdrom = open_cdrom("/dev/cdrom");
-	}
-	if(cdrom == -1) { /* I've seen this one a couple times... */
-		cdrom = open_cdrom("/dev/cd");
+    }
+    if(cdrom == -1) { 
+		warnx(_("Um, I can't seem to open /dev/cdrom.  Trying harder..."));
+		setenv("DEBUG", "1", 0);
+		cdrom = open_cdrom("/dev/cdrom");
 	}
 	if(cdrom == -1) { /* SCSI cdroms */
 		cdrom = open_cdrom("/dev/scd0");
@@ -157,29 +165,26 @@ int main(int argc, char *argv[]) {
 	if(cdrom == -1) {
 		cdrom = open_cdrom("/dev/sr0");
 	}
-	
-if (cdrom == -1) {
 
-	fprintf(stderr, _("\nUm, I can't seem to open any cd or dvd device.  Try setting the\n"
-		"CDROM environment variable to the device to open.\n"
-		"Example: \"export CDROM=/dev/hdb\"\n"));
-	
-	return 1;
-}
+	if (cdrom == -1) {
+			warnx(_("Hmm, I can't seem to open any cd or dvd device.  Try giving the\n"
+			"name of a cdrom device (/dev/hdc, maybe?) to cdctl."));
+
+			return 1;
+	}
 
 /* 
- * Various possibilities for symlinks to trigger eject or close		 
+ * Various possibilities for symlinks to trigger eject or close.  
+ * actions is an array of struct action, and action is a function
+ * pointer to the action to be performed.
  */
-if ((strstr(argv[0], "eject") != NULL) || (strstr(argv[0], "open") != NULL)) {
-	cd_eject(cdrom);
-	exit(0);
-}
-		 		 
-if ((strstr(argv[0], "shut") != NULL) || (strstr(argv[0], "close") != NULL)) {
-	cd_close(cdrom);
-	exit(0);
-}
- 		  		 
+
+        for(i = 0; actions[i].name != NULL; ++i) {
+            if(strstr(argv[0], actions[i].name) != NULL) {
+                (* actions[i].action)(cdrom); 
+                return 0;
+            }
+        }
 /* Ok, it's open or we're dead.  Proceed. */
 
 	switch(option) {
@@ -209,7 +214,7 @@ if ((strstr(argv[0], "shut") != NULL) || (strstr(argv[0], "close") != NULL)) {
 			break;
 		case 'r':
 			cd_resume(cdrom);
-			break;
+	        	break;
 		case 'p':
 			do_play(cdrom);
 			break;
@@ -797,7 +802,10 @@ int open_cdrom(char *cdrom_dev_file) {
 	int cdrom;
 
 	cdrom = open(cdrom_dev_file, O_RDONLY | O_NONBLOCK);
-	if(cdrom == -1) {
+        if(cdrom == -1) {
+            if(getenv("DEBUG")) {
+                warn("can't open \"%s\"", cdrom_dev_file);
+            }
 		return -1;
 	} else {
 		return cdrom;

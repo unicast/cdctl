@@ -32,6 +32,9 @@ ioctls.o: ioctls.c
 version.o: version.c
 iso_header.o: iso_header.c
 
+indent:
+	indent -kr -cdb -sc *.c
+
 install: install-bins install-docs install-mans install-mos
 
 install-bins: $(BINS)
@@ -66,10 +69,10 @@ commit: clean
 
 rpms: distclean
 	cd .. && tar czvf cdctl-@VERSION@.tar.gz cdctl
-	rpm -ta --target=i386 ../cdctl-@VERSION@.tar.gz
+	rpm -ta --target=i386 --buildroot ~/RPM ../cdctl-@VERSION@.tar.gz
 
 dist: distclean rpms
-	cd .. && tar czvf cdctl­@VERSION@.tar.gz cdctl
+	cd .. && tar czvf cdctl-@VERSION@.tar.gz cdctl
 
 dist-devel: distclean dist
 #	gpg --detach-sign ../cdctl-devel.tar.gz 

@@ -25,8 +25,10 @@ the current type of disc in the drive, and much more.
 %setup -n cdctl
 
 %build
-CXXFLAGS="$RPM_OPT_FLAGS" %configure
-uname -a|grep SMP && make -j 2 || make
+#CXXFLAGS="$RPM_OPT_FLAGS" %configure
+#uname -a|grep SMP && make -j 2 || make
+./configure
+make
 
 %install
 rm -rf $RPM_BUILD_ROOT

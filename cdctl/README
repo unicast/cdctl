@@ -4,7 +4,7 @@ Last updated on Tue Apr 11 2000
 
 Hi, thanks for trying out cdctl.  I hope you find it useful.  cdctl is a program
 to control your cdrom drive under Linux, and hopefully many other UNIXes in the
-future.  Right now, it does so much stuff that Í don't even bother maintaining
+future.  Right now, it does so much stuff that I don't even bother maintaining
 a list anymore.  Build it and do a 'cdctl --help' if you want the complete list
 for your system.  I say "your system" because older Linux kernels can't do 
 certain things.  cdctl detects this and doesn't build those features into

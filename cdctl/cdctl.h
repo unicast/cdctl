@@ -15,6 +15,11 @@ struct rt {
 	struct rt *next_rt;   /* pointer to next struct rt */
 };
 
+struct action {
+    char * name;
+    int (* action)(int);
+};
+
 /* 
  * NLS stuff
  */
