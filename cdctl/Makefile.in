@@ -1,0 +1,60 @@
+CC=gcc
+CFLAGS=-Wall -g
+BINS=cdctl sndreset
+OBJS=cdctl.o version.o ioctls.o iso_header.o
+DOCS=NEWS NUTSANDBOLTS LICENSE PUBLICKEY README SEGFAULTS
+MANS=cdctl.1
+MOS=cdctl.mo
+
+bindir = @bindir@
+mandir = @mandir@
+datadir = @datadir@
+
+# FIXME: autoconf needs to generate this
+
+localedir = /usr/share/locale
+INSTALL = @INSTALL@
+INSTALL_DATA = $(INSTALL) -m 644
+
+all: $(BINS)
+
+cdctl: $(OBJS)
+sndreset: sndreset.c
+rt.o: rt.c
+cdctl.o: cdctl.c
+ioctls.o: ioctls.c
+version.o: version.c
+iso_header.o: iso_header.c
+
+install: install-bins install-docs install-mans install-mos
+
+install-bins: $(BINS)
+	$(INSTALL) -s $(BINS) $(bindir)
+
+install-docs: $(DOCS)
+	$(INSTALL_DATA) $(DOCS) $(datadir)
+
+install-mans: $(MANS)
+	$(INSTALL_DATA) $(MANS) $(mandir)
+
+# FIXME: need to deal with other languages besides German
+
+install-mos: cdctl.mo
+	$(INSTALL_DATA) $(MOS) $(localedir)/de/LC_MESSAGES
+
+cdctl.mo: cdctl.po
+	msgfmt cdctl.po -o cdctl.mo
+
+clean:
+	rm -f $(OBJS) $(BINS) config.cache config.log config.status Makefile *~
+
+commit: clean
+	cvs commit
+
+dist: clean
+	cd .. && tar czvf cdctl­0.15.tar.gz cdctl 
+
+dist-devel: clean
+	cd .. && tar czvf cdctl-devel.tar.gz cdctl
+#	gpg --detach-sign ../cdctl-devel.tar.gz 
+	scp ../cdctl-devel.tar.gz* NEWS root@host30.frys.com:/home/thalakan/cdctl

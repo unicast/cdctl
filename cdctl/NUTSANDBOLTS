@@ -1,0 +1,88 @@
+This document tries to describe how cdctl does what it does.
+
+cdctl uses the ioctl(2) system call to make the cdrom device file do neat
+things.  The ioctls that I use are defined in /drivers/block/cdrom.c, and are
+mostly implemented in /drivers/cdrom/cdrom.c, under the Linux kernel source
+tree.
+
+I created a simplified API to these calls in ioctls.c.  All the functions in
+ioctls.c call ioctl(2) on the file descriptor that you pass it as an argument.
+I also use a standard naming convention of cd_SOMETHING where SOMETHING is
+a simple English name for the action performed.  For example: cd_eject(4) would
+call the CDROMEJECT ioctl on the 4th file descriptor that you have open.  
+
+Similarly, I created a series of functions to interface to the cd_something
+functions in cdctl.c.  These functions start with "do_".  If this is
+confusing you, maybe this will help:
+
+main()                 - parses options, decides to call
++do_print_tocheader()  - which calls 
+ +cd_get_tocheader()   - which does the work.
+
+If you feel like using my code for something, feel free to cut and paste the
+cd_something functions in ioctls.c and call them directly.  It's probably not a
+good idea to use the do_something functions I've written in cdctl.c, because
+they contain cdctl-specific glue, and you'll spend more time rewriting my glue
+rather than writing your own.
+
+The cd audio playing functions are non-blocking, so once I tell the cdrom to
+play a cd, the cdrom drive takes over and knows what tracks I want it to play.
+cdctl just starts the audio playing, it doesn't sit around and wait for it to
+finish.  
+
+I could make it sit around and wait, because I want to implement a repeat
+option.  This would let the user do things like play track 3 over and over
+again, until they're sick of hearing it.  In order for cdctl to do this, I
+would have to make it a background, or daemon process, which would contribute
+to the emacsification of the universe.  Don't let the voices get you!  Small
+and beautiful is the way to go! :)
+
+About some of the messages:
+
+The word "multisession" may confuse you.  Just remember that a multisession cd
+is capable of being written more than once.  Yes, even your dinky little cd
+recorder is probably capable of writing more than once on a multisession cd, I
+don't care what the documentation says about not being able to write on the cd
+more than once.  I've seen some really old cd recorders that made claims to
+the contrary, and only one has been multisession-incapable so far.  Whether
+the cd *MEDIA* is multisession or singlesession depends on how the very first
+track was written on it; there is no such thing as a "multisession-capable"
+recordable cd, because they are all capable of taking multisession tracks.  Of
+course, this only applies if you're doing the writing yourself.  If you're
+talking about so-called "aluminum" professionally written cds, like the
+audio discs you see in your local record store, they're almost always
+singlesession, because it is physically not possible for ordinary equipment to
+write additional data on an aluminum cd.  So why bother creating a
+multisession-capable master for a disc that's going to be mass-producted on
+unwriteable media anyway?  
+
+cdctl will sometimes refer to "data mode 1" or "data mode 2".  In order to
+understand what it's talking about, you need to understand this background.  
+
+The physical format defined by the standards lets you stick 2352 bytes in a
+sector.  This is divided up as follows:
+
+ - 2048 bytes for user data
+ - 12 bytes for a synchronization field
+ - 4 bytes for a sector header
+ - 8 bytes for a sector subheader (if it's a multisession cd)
+ - 4 bytes for a sector address tag field
+ - 288 bytes for an auxiliary field. (280 if it's multisession)
+
+Now, that "auxiliary field" stuff is where the difference between data mode 1
+and data mode 2 is apparant.  When a cd is recorded using data mode 1, that
+auxiliary field contains error correction information.  When a CD is recorded
+using data mode 2, that auxiliary field contains 288 bytes of ADDITONAL DATA,
+bringing the total usable storage of each sector up to 2336 (2324 for a
+multisession cd) bytes per sector.
+
+Really wierd cds sometimes have usable sector sizes of 2052, 2056, 2324, 2332,
+2340, or 2352 bytes per sector.  Everything normal people are likely to deal
+with have 2336 or 2048 bytes per sector.
+
+You may have realized that I assume there is a maximum of 99 tracks in the code.
+This is because the standard makes any cd with more than 99 tracks ILLEGAL, and
+most hardware wouldn't read it anyway.
+
+The MCN (UPC) stuff does work!  I blasted a MCN onto a CDRW using Jörg
+Schilling's cdrecord, and cdctl *does* read the MCN properly.  

@@ -1,0 +1,10 @@
+cdctl is free for non-commercial use.  If you're a company and you find it 
+useful, talk to me about letting me use your name in the cdctl package.  I do
+NOT charge for my software.
+
+You know, I was pondering what license to release cdctl under when I realized
+that this software is so trivial that no one in their right mind would pay me
+for it.  Then I thought about releasing it under the GPL, but I'd get patches
+from people anyway, and it seems silly to make that a requirement to download
+the software.  So I'm just going to make it free for everyone who's not a
+company.  Enjoy!

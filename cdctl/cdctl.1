@@ -1,0 +1,245 @@
+.TH  CDCTL 1 "March 25, 1999"
+
+.\" defines cdctl with formatting
+.ds cd \fIcdctl\fP
+
+.SH NAME
+\*(cd \- controls your cdrom or dvdrom drive
+.SH SYNOPSIS
+.nf
+\*(cd [\-abcdeghklmoprstuvV] [\-\-pause] [\-\-speed] [\-\-close] [\-\-disc]
+[\-\-eject] [\-\-getstatus] [\-\-help] [\-\-capabilities] [\-\-list] [\-\-mcn]
+[\-\-lockdoor] [\-\-play] [\-\-resume] [\-\-stop] [\-\-tocentry]
+[\-\-autoclose] [\-\-volume] [\-\-version] [\-\-numslots]
+
+.fi
+.SH DESCRIPTION
+\*(cd is a utility to control your cdrom or dvdrom drive, to query it, and to
+play audio CDs on it.  cdctl does not do many things by itself, but rather
+relies on the kernel ioctl(2) functions in \fIdrivers/cdrom/cdrom.c\fP, the
+uniform cdrom driver, to do the work.  Earlier kernels do not have certain
+capabilities, and only recent kernels (2.2.4 and above, with uniform cdrom
+driver version 2.53) have capability readback and eject button locking.  
+.SS OPTIONS
+.TP 
+.I "\-a, \-\-pause"
+Pauses the drive if it is currently playing an audio disc, otherwise has
+no effect.
+.TP 
+.I "\-bS, \-\-speed=S"
+Asks the drive to cap its maximum speed to S.  S is a multiple of 150 kilobytes
+per second, the speed at which a 1x drives runs.  This option is useful for
+making your drive run quieter if you have a very fast drive.  
+.TP
+.I "\-c, \-\-close"
+Closes the cdrom tray, if possible.  Note that many drives report that they
+have a tray (and it can be closed) when they are interrogated, but in reality
+do not, and can not.  Pioneer "slot" drives and miniaturized laptop drives in
+particular have this behavior.  In this case, \*(cd will return the kernel
+error message and the kernel will write a dump of the ATAPI error the drive
+returns to your kernel logs.
+.TP
+.I "\-d, \-\-disc"
+Changes the disc on a multi-disc changer, or jukebox.  Note that again, many
+drives misreport their ability to change discs.  \*(cd will try to warn you of
+the manufacturer's incompetance in this case.  
+.TP
+.I "\-e, \-\-eject"
+Ejects the disc tray on a tray loading drive, the caddy on a caddy loading
+drive, or just the disc on a slot loading drive.  Works on many other devices
+as well, such as the sparc floppy drive, zip drives, jaz drives, certain tape
+drives such as the Exabyte Mammoth, and any other device that implements the
+CDROMEJECT ioctl(2) call in its driver.  This option tends to work on more
+drives than the --close option.
+.TP
+.I "\-g, \-\-getstatus"
+Prints the status of the cd in the drive.  The only status codes are for CDs
+currently; please contact the kernel mailing list or the cdrom driver
+maintainer to help get the DVD status codes implemented in the Linux kernel.  
+There are eleven possibilites:  
+.RS +.4i
+.TP
+.B No info available
+Which usually means there is no disc in the drive,
+.TP
+.B No disc
+Which means the drive explicitly says there is no disc in the drive,
+.TP
+.B Tray is open
+Which means that the tray (if any) is open.  Very few drives report this one;
+instead most say that there is no disc in the drive.  
+.TP
+.B Drive is not ready
+Which means the drive is busy.  ATAPI drives have no way of distinguishing
+between not ready and an open tray, so the Linux kernel always returns "tray is
+open" in case it gets this response.  Therefore, if you ever do get this
+response on an ATAPI drive, please notify the linux kernel mailing list
+immediately; you've found a kernel bug!  Other drivers that do support this
+response are the cdu31a driver, the cm206 driver, the mcd driver, and the
+sbpcd driver.  
+.TP
+.B OK now
+Which means that an error condition is no longer present.  No one has reported
+this response from a drive yet; if you do see it, mail the cdctl developers
+immediately.  
+.TP
+.B Audio disc
+Which means there is a red-book PCM audio disc in the drive.  This is the type
+of CD people talk about when they go to the record store to get music.  
+.TP
+.B Data type 1
+Which means there is a type 1 data cd (2048 bytes / sector) in the drive.  
+Type 1 data CDs have reduced capacity, but additional error correction
+information.
+.TP
+.B Data type 2
+Which means there is a type 2 data cd (2336 bytes / sector) in the drive.  Type
+2 data CDs have increased capacity, but less error correction information.
+.TP
+.B Multisession type 1
+Which means there is a type 1 multisession cd in the drive.  These are just
+like a type 1 data cd, but have multiple sessions on it (have been written on
+more than once).  
+.TP
+.B Multisession type 2
+Which means there is a type 2 multisession cd in the drive.  These are just
+like a type 2 data cd, but have multiple sessions on it (have been written on
+more than once).
+.TP
+.B Mixed-mode
+Which means that there is a mixed-mode cd in the drive, with both audio and
+data tracks on it.  
+.RS -.4i
+.TP
+.I "\-h, \-\-help"
+Prints out a command summary.
+.TP 
+.I "\-k, \-\-capabilities"
+Prints out the capabilities of an ATAPI or SCSI drive, as reported by drive's
+capability response and as interpreted by the Linux kernel.  Many drives give
+wrong responses, which I interpret as a sign of incompetance on their part.
+Your interpretation may differ.  Please send responses of non-ATAPI/SCSI drives
+to the cdctl maintainers.
+.TP
+.I "\-l, \-\-list"
+Prints out a list of tracks on the current disc, and whether they are audio or
+data.
+.TP
+.I "\-m, \-\-mcn"
+Prints out the MCN (or Medium Catalog Number, previously the UPC), if any.
+Most drives do read this, but many don't.  The only two situations that you
+are likely to use this in are 1) if you manage to find an audio CD with the MCN
+on it or 2) if you make a disc yourself with the MCN on it.  Pretty useless
+unless you are a disc publisher.  
+.TP
+.I "\-\-numslots"
+Prints out the number of slots on your cdrom changer.  
+.TP
+.I "\-oS, \-\-lockdoor=S"
+Locks the eject button so the disc cannot be manually ejected.  Requires kernel
+version 2.2.4 or newer.  Set S to 0 to unlock the drive, and to 1 to lock it.  
+.TP
+.I "\-pT, \-\-play=T"
+Plays audio tracks, if any.  T takes the form START-FINISH or START:FINISH.
+Either START or FINISH or both may be omitted.  If this confuses you, try these
+examples:
+.RS +.4i
+.TP
+.B "cdctl --play"
+Plays all audio tracks.  
+.TP
+.B "cdctl --play=1"
+Plays all audio tracks, beginning from track 1.
+.TP
+.B "cdctl --play=1-3"
+Plays audio tracks 1 through 3. 
+.TP
+.B "cdctl --play=4"
+Plays all audio tracks, beginning from track 4.
+.TP
+.B "cdctl --play=-9"
+Plays any audio tracks through track 9.  
+.TP
+.B "cdctl --play=5:9"
+Plays any audio tracks from track 5 through track 9.  Colons work as well as
+dashes.
+.RS -.4i
+.TP
+.I "\-r, \-\-resume"
+Resumes playing an audio CD, if paused.  See the --pause option.
+.TP
+.I "\-s, \-\-stop"
+Stops playing an audio CD, if currently playing.  See the --play option.
+.TP
+.I "\-tT, \-\-tocentry=T"
+Prints out the table of contents entry for track T.  
+.TP
+.I "\-uS, \-\-autoeject=S"
+Sets the autoclose bit to S.  This controls whether the drive will
+automatically eject upon unmount of a disc in the drive.  The Linux kernel sets
+this to 0 by default.  Set to 0 to disable this behaviour and to 1 to enable
+it. 
+.TP
+.I "\-vV, \-\-volume=V"
+Prints out the current volume if V is not given, otherwise sets the current
+volume to V.  
+.TP
+.I "\-V, \-\-version"
+Prints out the current version of cdctl.
+
+.SH ENVIRONMENT VARIABLES
+.TP
+.B "LANG"
+Sets the output language of cdctl.  Currently supported languages are: de
+(German), and en (English).
+.TP
+.B "CDROM"
+Sets the default cdrom device if not \fI/dev/cdrom\fP.  This way you don't
+always have to specify the name of the device on the command line.  
+.TP
+.B "DEBUG"
+Turns debugging on, printing out all sorts of fun information about what cdctl
+is doing behind the scenes.  Worth a shot if something isn't working right or
+you're just bored.
+
+.SH SEE ALSO
+ioctl(2), ioctl_list(5), and the maintainers notes in the cdctl source.  
+
+.SH AUTHORS
+Thanks to:
+
+Andy Thaller <andy_thaller@physik.tu-muenchen.de>, 2.0 support and checks for
+the DRIVE_NOT_FOUND error message, which inspired kernel capability checking
+using the preprocessor,
+
+Beat Rupp <beat.rupp@gmx.net> for DVD testing and some German localization,
+
+Gabor Z Papp <gzp@gzp.org.hu> for testing the jukebox code on his NEC 4x4 ATAPI
+jukebox, Hungarian localization, and reminding us that not everyone prefers
+English,
+
+Dan Morrison <dmorriso@buffalo.edu> for testing on an ATAPI system,
+
+Andy Piper <andyp@argonet.co.uk> for a usage message bug report and a patch,
+
+Nick <nikk@phreaker.net> for helping to get the autoeject (-u option) working
+correctly, 
+
+Thomas Soares <ttsoares@cedep.ifch.ufrgs.br> for working to get the command
+line / CDROM env variable logic working right, 
+
+Fry's Electronics Black Ops <http://host30.frys.com/febo> for hosting the site,
+hiring the maintainers, and providing a DS-1 to work on, and 
+
+Jason Spence <thalakan@technologist.com>.  He currently maintains the cdctl
+source at \fIhttp://host30.frys.com/cdctl\fP in his spare time.  Thanks to the
+many people who took the time to submit reports to us!  Without testers, none
+of cdctl would be possible.  
+
+.SH BUGS
+.PP 
+Needs to undergo a massive malloc(3) audit, needs to have all ioctl(2) calls
+implemented, and needs to explicitly support all kernel versions, rather than
+specific features.  Also needs to have easier-to-remember options; I ran out of
+letters to use in getopt_long, so I had to resort to allocation based on unused
+letters.  

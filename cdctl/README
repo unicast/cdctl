@@ -1,0 +1,113 @@
+cdctl README
+
+Last updated on Sat Mar 25 2000
+
+Hi, thanks for trying out cdctl.  I hope you find it useful.  cdctl is a program
+to control your cdrom drive under Linux, and hopefully many other UNIXes in the
+future.  Right now, it does so much stuff that Í don't even bother maintaining
+a list anymore.  Build it and do a 'cdctl --help' if you want the complete list
+for your system.  I say "your system" because older Linux kernels can't do 
+certain things.  cdctl detects this and doesn't build those features into
+itself.
+
+The parsing code for the play (-p or --play) option is really good.  I think I
+have it completely bulletproofed, but if you can make cdctl segfault by feeding
+it some crazy data, please let me know.  The code in get_tracks() can probably
+be used as teaching material for looney manual string parsing in C.  I did a
+very careful job to make it as readable as possible, even though it handles
+just about every wierd exception I could think of.  Here are a some examples
+of how to use it:
+
+cdctl -p2         /* starts playing track 2 */
+cdctl -p2:4       /* plays from track 2 through track 4 */
+cdctl -p4:2       /* cdctl knows you mean "play 2 through 4" here */
+cdctl -p:4        /* play from the first track through track 4 */
+cdctl --play :4   /* with a long option */
+cdctl --play=:4   /* same thing */
+cdctl --play 4-12 /* dashes work too */
+cdctl --play -13  /* play through track 13 */
+
+Since cdctl does a straight ioctl(2) call to the drive, it should
+automagically work as the kernel code is updated to deal with DVD drives. 
+Jens Axboe, the Linux cdrom driver maintainer, has already confirmed that the
+simple stuff like eject and toc reading on regular cds should work just fine,
+since that cheapo ATAPI DVD drive you bought supports a subset of the regular
+ATAPI calls.  Please let me know if your DVD drive does other stuff, or does
+not do them.  My ATAPI DVD drives perform all functions successfully on my
+test systems, so I'm pretty sure it should work well for you too.
+
+Thanks to Beat Rupp <beat.rupp@gmx.net> for confirming that it works fine on
+his ATAPI DVD drive, a Toshiba SD-M1212 DVD-ROM.  
+
+I've also included a utility called sndreset that reads the current volume from
+the CD mixer channel on your sound card, then writes the same value back.  This
+seems pointless, but I need it to reset the volume on my Toshiba Satellite Pro's
+sound card.  The #)(*$ APM BIOS forgets to reset the mixer volumes after I
+suspend the laptop, so every time I wake it up, I DON'T GET ANY SOUND!  It was
+very annoying to fire up the mixer every time I woke the laptop up, so I ended
+up doing an strace(8) on aumix, and found out that it reads the volume and
+writes it right back to the mixer using ioctl(SOUND_MIXER_WRITE_X).  I wrote a
+silly little utility to do just that, and now it's part of cdctl.  
+
+I've also included a perl version of sndreset, because I only recently found out
+that perl had an ioctl() call.  My perl doesn't have ioctls.ph installed
+correctly, so I can't test it.  Do a ./sndreset.pl and see if it works on your
+system.
+
+The -u (automount) option causes the cdrom to automatically close the cdrom
+tray when a mount command is received, and to automatically eject the cdrom
+tray when the cd is unmounted.  Some people were confused about this.  By
+default, the Linux kernel only closes the cdrom tray when a mount command is
+received, and does not automatically eject a cdrom on unmount; setting this
+flag causes it to exhibit both behaviours.     
+
+If you're the paranoid type, you can verify that this REALLY IS cdctl and
+not some nefarious subversion of the open source development system by
+importing my public key, getting the digital signature of the tarball at 
+http://host30.frys.com/cdctl/cdctl-latest.tar.gz.sig, and verifying the digital
+signature matches up with my key.  You can get my public key from the file
+PUBLICKEY in this distribution, by fingering thalakan@host30.frys.com, or from
+pgpkeys.mit.edu.  This should be a simple as
+
+gpg --import PUBLICKEY; cd ..; gpg --verify cdctl-latest.tar.gz.sig
+cdctl-latest.tar.gz
+
+if you're using gpg.  I'm just beginning to crypto to sign my code, so let me
+know if I'm doing it correctly.   Also feel free to encrypt any mail you want to
+send me if you have a crypto fetish.  
+
+If you have your cdrom on a wierd device file besides "/dev/cdrom", you can use
+the CDROM environment variable to select which cdrom you want to use.
+Something like 'alias eject-cdrom-2="CDROM=/dev/scd1;cdctl --eject"' should be
+what you're looking for if you want to eject your second cdrom drive.  Thanks
+to Thomas Soares <ttsoares@cedep.ifch.ufrgs.br> for making me add this to the
+docs.
+
+You can also say "cdctl --eject /dev/scd1" now.  Thanks to Thomas again for
+making me implement this.  
+
+I debated for a while on how to get cdctl to cope with the different kernel
+versions.  Making it run on the kernel it was compiled under is easy; whether
+to allow that version to run on other kernels is the question.  I decided to
+not allow compilation of features that don't exist in your kernel, and to
+have cdctl tell you that your kernel doesn't support certain features, should
+you try to run a version compiled on a kernel later than the one you have.  
+
+Speed selection (cdctl -b6) doesn't seem to do much on most drives.  However,
+if you have one of those 36x or faster drives, setting this to a lower value is
+rumored to stop that helicopter sound it makes when it spins the disc up.  You
+lose a little bit of speed, but your computer doesn't slide across the table
+when you mount a disc... some of the newer 50x and faster drives are reported
+to be really fscking loud, shaking screws out of the case and things like
+that.  My main client, Fry's Electronics, is currently carrying 72x drives that
+have a theoretical maximum data transfer rate of 10.8MB/sec, but in practice,
+it's much lower.  However, those drives apparently do spin the disc up to the
+speed necessary to get that transfer rate, so you'll find the -b option very
+useful for them.  
+
+cdctl responds to the "DEBUG" environment variable, like all the software I
+write.  When cdctl sees that DEBUG has been set, it will print out all sorts of
+interesting debugging information.  Try setting it if you are having problems. 
+
+You can reach me at thalakan@technologist.com if you have any questions,
+patches, or pizza.

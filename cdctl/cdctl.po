@@ -1,0 +1,508 @@
+# messages catalog for cdctl
+# Jason Spence <thalakan@technologist.com>
+#
+#: cdctl.c:47
+#, fuzzy
+msgid "cdctl"
+msgstr "cdctl"
+"Project-Id-Version: cdctl 0.14-devel\n"
+"POT-Creation-Date: 1999-09-05 22:53-0700\n"
+"PO-Revision-Date: 1999-09-05 11:58-0700\n"
+"Last-Translator: Beat Rupp <beat.rupp@gmx.net>\n"
+"Language-Team: Genman <beat.rupp@gmx.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 7bit\n"
+
+#: cdctl.c:91
+msgid "You must give only one option.\n"
+msgstr "Bitte geben sie nur ein Argument an.\n"
+
+#: cdctl.c:109 cdctl.c:119
+#, c-format
+msgid "can't open %s"
+msgstr "Kann %s nicht öffnen"
+
+
+#: cdctl.c:140
+msgid ""
+"\n"
+"Um, I can't seem to open any cd or dvd device.  Try setting the\n"
+"CDROM environment variable to the device to open.\n"
+"Example: \"export CDROM=/dev/hdb\"\n"
+msgstr ""
+"\n"
+"Es kann kein CD- oder DVD-Gerät geöffnet werden. Versuchen Sie, die"
+"CDROM-Umgebungsvariable auf Ihr CD-Laufwerk zu setzen."
+"Beispiel: \"export CDROM=/dev/hdb\"\n"
+
+#: cdctl.c:205
+msgid "you must supply a numeric argument for the o option"
+msgstr "Bitte geben Sie für die Option o ein numerisches Argument an"
+
+#: cdctl.c:214 cdctl.c:217
+msgid "you must supply a numeric argument for the t option"
+msgstr "Bitte geben Sie für die Option t ein numerisches Argument an"
+
+#: cdctl.c:222
+#, c-format
+msgid "%i"
+msgstr ""
+
+#: cdctl.c:253
+#, c-format
+msgid "%s is not a valid slot."
+msgstr ""
+
+#: cdctl.c:254
+#, c-format
+msgid "slot must be between 1 and %i"
+msgstr ""
+
+#: cdctl.c:259
+msgid "your drive is not an ATAPI complaint jukebox."
+msgstr ""
+
+#: cdctl.c:275
+msgid ""
+"Got wierd struct cdrom_mcn from the cdrom driver.  Notify the\n"
+"maintainers (cdctl --help) immediately¸ you've found a bug!\n"
+msgstr ""
+
+#: cdctl.c:279 cdctl.c:294 cdctl.c:391 cdctl.c:408 cdctl.c:623 cdctl.c:656
+#: cdctl.c:674 cdctl.c:683 ioctls.c:219 ioctls.c:392 sndreset.c:34
+msgid "DEBUG"
+msgstr ""
+
+#: cdctl.c:280
+#, c-format
+msgid "DEBUG: mcn[0] is %i"
+msgstr ""
+
+#: cdctl.c:282 version.c:33
+#, c-format
+msgid "%s\n"
+msgstr ""
+
+#: cdctl.c:295
+#, c-format
+msgid "DEBUG: cd_get_capability returned %i"
+msgstr ""
+
+#: cdctl.c:298
+#, c-format
+msgid "Tray close             : %i\n"
+msgstr ""
+
+#: cdctl.c:299
+#, c-format
+msgid "Tray open              : %i\n"
+msgstr ""
+
+#: cdctl.c:300
+#, c-format
+msgid "Can disable eject      : %i\n"
+msgstr ""
+
+#: cdctl.c:301
+#, c-format
+msgid "Selectable spin speed  : %i\n"
+msgstr ""
+
+#: cdctl.c:302
+#, c-format
+msgid "Is a jukebox           : %i\n"
+msgstr ""
+
+#: cdctl.c:304
+#, c-format
+msgid "Number of slots        : %i\n"
+msgstr ""
+
+#: cdctl.c:305
+#, c-format
+msgid "Is multisession capable: %i\n"
+msgstr ""
+
+#: cdctl.c:306
+#, c-format
+msgid "Can read the MCN (UPC) : %i\n"
+msgstr ""
+
+#: cdctl.c:307
+#, c-format
+msgid "Can report media change: %i\n"
+msgstr ""
+
+#: cdctl.c:308
+#, c-format
+msgid "Can play audio discs   : %i\n"
+msgstr ""
+
+#: cdctl.c:309
+#, c-format
+msgid "Can do a hard reset    : %i\n"
+msgstr ""
+
+#: cdctl.c:310
+#, c-format
+msgid "Has non-standard ioctls: %i\n"
+msgstr ""
+
+#: cdctl.c:311
+#, c-format
+msgid "Can report drive status: %i\n"
+msgstr ""
+
+#: cdctl.c:315
+msgid ""
+"WARNING: your cdrom drive says that it is a jukebox, but\n"
+"only reports that it has one slot!\n"
+msgstr ""
+
+#: cdctl.c:333
+#, c-format
+msgid ""
+"*** Track info for cd track %i ***\n"
+"track start: %i:%i:%i\n"
+"This track is %s track.\n"
+msgstr ""
+
+#: cdctl.c:339
+msgid "a data"
+msgstr ""
+
+#: cdctl.c:339
+msgid "an audio"
+msgstr ""
+
+#: cdctl.c:351
+#, c-format
+msgid "L : %i\n"
+msgstr ""
+
+#: cdctl.c:352
+#, c-format
+msgid "R : %i\n"
+msgstr ""
+
+#: cdctl.c:353
+#, c-format
+msgid "LR: %i\n"
+msgstr ""
+
+#: cdctl.c:354
+#, c-format
+msgid "RR: %i\n"
+msgstr ""
+
+#: cdctl.c:365
+msgid ":- "
+msgstr ""
+
+#: cdctl.c:392
+#, c-format
+msgid "DEBUG: do_set_volume(): one is %i\n"
+msgstr ""
+
+#: cdctl.c:409
+#, c-format
+msgid "DEBUG: do_set_volume(): two is %i\n"
+msgstr ""
+
+#: cdctl.c:438
+#, c-format
+msgid "Track %2i: %s, starts at %.2i:%.2i:%.2i\n"
+msgstr ""
+
+#: cdctl.c:440
+msgid " data"
+msgstr ""
+
+#: cdctl.c:440
+msgid "audio"
+msgstr ""
+
+#: cdctl.c:456
+msgid "you must supply an argument to --speed.\n"
+msgstr ""
+
+#: cdctl.c:463
+msgid "you must supply a numeric argument greater than 0 to --speed.\n"
+msgstr ""
+
+#: cdctl.c:476
+msgid "There is no CD/DVD in the drive (no info).\n"
+msgstr ""
+
+#: cdctl.c:479
+msgid "There is no CD/DVD in the drive (no disc).\n"
+msgstr ""
+
+#: cdctl.c:482
+msgid "The CD/DVD drive tray is open.\n"
+msgstr ""
+
+#: cdctl.c:485
+msgid "The CD/DVD drive is not ready.  Try again.\n"
+msgstr ""
+
+#: cdctl.c:488
+msgid "The CD/DVD drive is OK now.\n"
+msgstr ""
+
+#: cdctl.c:491
+msgid "There is an audio CD/DVD in the drive.\n"
+msgstr ""
+
+#: cdctl.c:494
+msgid "There is a type 1 data CD/DVD in the drive.\n"
+msgstr ""
+
+#: cdctl.c:497
+msgid "There is a type 2 data CD/DVD in the drive.\n"
+msgstr ""
+
+#: cdctl.c:500
+msgid "There is a type 1 multisession CD/DVD in the drive.\n"
+msgstr ""
+
+#: cdctl.c:503
+msgid "There is a type 2 multisession CD/DVD in the drive.\n"
+msgstr ""
+
+#: cdctl.c:507
+msgid "There is a mixed-mode CD/DVD in the drive.\n"
+msgstr ""
+
+#: cdctl.c:526 cdctl.c:528
+msgid "Um, there's no disc in the drive."
+msgstr ""
+
+#: cdctl.c:530
+msgid "NULL cdrom_tochdr structure passed to do_play()"
+msgstr ""
+
+#: cdctl.c:555
+msgid "The play option requires a numeric argument."
+msgstr ""
+
+#: cdctl.c:578 cdctl.c:596
+msgid "invalid argument to play... say cdctl -pSTART-FINISH or START:FINISH.\n"
+msgstr ""
+
+#: cdctl.c:607 ioctls.c:156 rt.c:28
+msgid "can't allocate memory!"
+msgstr ""
+
+#: cdctl.c:614
+msgid "couldn't read cd/dvd table of contents"
+msgstr ""
+
+#: cdctl.c:624
+#, c-format
+msgid "can't start playing at track %i, the first track is %i."
+msgstr ""
+
+#: cdctl.c:630
+#, c-format
+msgid "can't play track %i, there's only %i track(s)!"
+msgstr ""
+
+#: cdctl.c:642
+#, c-format
+msgid "can't play through track %i, the last track is %i."
+msgstr ""
+
+#: cdctl.c:657
+msgid "um, you put the first track last and last track first."
+msgstr ""
+
+#: cdctl.c:671
+#, c-format
+msgid "can't open cdrom device file %s"
+msgstr ""
+
+#: cdctl.c:675
+#, c-format
+msgid "open_cdrom() returned fd %i\n"
+msgstr ""
+
+#: cdctl.c:684
+#, c-format
+msgid "Why, we just got signal number %i!\n"
+msgstr ""
+
+#: cdctl.c:688
+msgid "Caught SIGINT, exiting..."
+msgstr ""
+
+#: ioctls.c:35
+msgid "Your cd/dvd drive can't eject its tray or caddy.\n"
+msgstr ""
+
+#: ioctls.c:41
+msgid "can't eject cd/dvd device"
+msgstr ""
+
+#: ioctls.c:54
+msgid "cannot allocate memory!"
+msgstr ""
+
+#: ioctls.c:60
+msgid "can't read the mcn from the drive"
+msgstr ""
+
+#: ioctls.c:75
+msgid "can't stop the cd/dvd drive"
+msgstr ""
+
+#: ioctls.c:90
+msgid "Your cd/dvd drive can't close its tray, or does not have a tray.\n"
+msgstr ""
+
+#: ioctls.c:97
+msgid "can't close cd/dvd drive"
+msgstr ""
+
+#: ioctls.c:111
+msgid "can't pause cd/dvd drive"
+msgstr ""
+
+#: ioctls.c:126
+msgid "Try pausing a CD before you try this option."
+msgstr ""
+
+#: ioctls.c:129
+msgid "can't resume playing cd/dvd drive"
+msgstr ""
+
+#: ioctls.c:166
+#, c-format
+msgid "can't read table of contents entry for track %i"
+msgstr ""
+
+#: ioctls.c:185
+msgid "couldn't allocate memory!"
+msgstr ""
+
+#: ioctls.c:192
+msgid "can't read cdrom table of contents"
+msgstr ""
+
+#: ioctls.c:194 ioctls.c:196
+msgid "Um, I don't think there's a cd in the drive."
+msgstr ""
+
+#: ioctls.c:220
+#, c-format
+msgid "DEBUG: playing tracks %i through %i\n"
+msgstr ""
+
+#: ioctls.c:230
+msgid "can't play cd/dvd device"
+msgstr ""
+
+#: ioctls.c:245
+msgid "can't change disc"
+msgstr ""
+
+#: ioctls.c:261
+msgid "can't lock the cdrom door!"
+msgstr ""
+
+#: ioctls.c:282
+msgid "can't get drive capabilities!"
+msgstr ""
+
+#: ioctls.c:303
+msgid "can't get number of changer slots"
+msgstr ""
+
+#: ioctls.c:318
+msgid "can't set drive speed!"
+msgstr ""
+
+#: ioctls.c:323
+msgid "the drive does not support speed selection!"
+msgstr ""
+
+#: ioctls.c:335
+msgid "NULL struct cdrom_volctrl passed to cd_set_volume()"
+msgstr ""
+
+#: ioctls.c:342
+msgid "can't set cdrom volume!"
+msgstr ""
+
+#: ioctls.c:357
+msgid "out of memory!"
+msgstr ""
+
+#: ioctls.c:364
+msgid "can't read volume"
+msgstr ""
+
+#: ioctls.c:377
+msgid "can't get cd status"
+msgstr ""
+
+#: ioctls.c:389
+msgid "can't set auto-eject!"
+msgstr ""
+
+#: ioctls.c:393
+#, c-format
+msgid "autoeject successful!  ioctl() returned %i."
+msgstr ""
+
+#: rt.c:58
+msgid "oh, crap!  memory allocation is all f*cked up!\n"
+msgstr ""
+
+#: sndreset.c:16
+msgid "/dev/dsp"
+msgstr ""
+
+#: sndreset.c:18
+msgid "can't open /dev/dsp"
+msgstr ""
+
+#: sndreset.c:24
+msgid "can't execute READ_CD ioctl"
+msgstr ""
+
+#: sndreset.c:30
+msgid "can't execute WRITE_CD ioctl"
+msgstr ""
+
+#: sndreset.c:35
+#, c-format
+msgid "READ_CD returned %i\n"
+msgstr ""
+
+#: version.c:43
+msgid ""
+"Usage: cdctl [OPTION]\n"
+"Controls the cdrom drive.\n"
+"\n"
+"-a     --pause         pAuse the cdrom currently playing\n"
+"-bS    --speed=S       Ask the drive to spin the disc at speed S\n"
+"-c     --close         Close the cd tray if possible\n"
+"-dD    --disc D        select Disc D for a cd-changer\n"
+"-e     --eject         Eject the cd, cd tray, or cd cartridge\n"
+"-g     --getstatus     Get and print type/status of the cd in the drive\n"
+"-h     --help          print this Help message\n"
+"-k     --capabilities  Print out all the things your drive can do\n"
+"-l     --list          List the entire table of contents\n"
+"-m     --mcn           print MCN (or UPC) of the cd in the drive\n"
+"-oA    --lockdoor=A    lOck or unlock the eject button\n"
+"-pT    --play T        Play track T\n"
+"-r     --resume        Resume playing\n"
+"-s     --stop          Stop playing\n"
+"-tT    --tocentry=T    print the Table of contents entry for track T\n"
+"-uA    --automount=A   set aUtomount bits to A\n"
+"-V     --version       print Version\n"
+"\n"
+"Send bug reports to Jason Spence <thalakan@technologist.com>\n"
+msgstr ""

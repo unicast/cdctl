@@ -1,0 +1,88 @@
+Version 0.15
+ - Fixed an option parsing bug
+ - 2.0 support by Andy Thaller <andy_thaller@physik.tu-muenchen.de>
+   Thanks, Andy!
+ - Confirmed to work on an ATAPI system by Dan Morrison <dmorriso@buffalo.edu>
+ - Doesn't dump core anymore if there's no disc in the drive.  Added more
+   user-friendly error message hinting that the user should stick a disc in :)
+ - Added automount / unmount stuff (-u option) and explanation in README
+ - Fixed improper error handler in do_play()
+ - Added development version on host30.frys.com and a make-dist command
+ - Added drive door locking (-o option) for newer kernels
+ - Added capability printout for newer kernels
+ - Fixed a nasty memset(3) bug where I used strlen() to figure out the length
+   of a string that HAD NOT BEEN INITIALIZED YET, so strlen merrily walked off
+   the end until it found a NULL somewhere, overwriting the cdrom file
+   descriptor in the process.  
+ - cdctl does an eject and quits if it is called as "eject" by symlink,
+   hardlink, or renaming.
+ - Wrote a cdctl.1 man page
+ - Added GNU autoconf support
+ - Added GNU gettext(3) support and a few German messages
+ - NOTE THAT CAPABILITY READBACK IS BROKEN IN 2.2 ON ATAPI DRIVES, says Jens
+   Axboe, the kernel cdrom maintainer. 
+ - Granted permission to Debian to make a package for commercial distribution.
+ - Does anyone know how to make RPMS?  Mail thalakan@technologist.com if you
+   do.
+   
+Version 0.14
+ - Updated version.c and the usage message; thanks to Andy Piper
+   <andyp@argonet.co.uk> for the diff.
+ - Added speed selection
+ - Completely redid the opening option logic; cdctl -e /dev/scd3 works now.
+ - Added some crypto stuff so paranoid people can verify that they really got my
+   code
+ - Added -d option to switch discs in a multi-cd changer
+ - Added some infrastructure to do garbage collection on signal interception
+   (see rt.c)
+
+Version 0.13
+ - Added -m option to read the MCN (also knows as the UPC) from the drive.
+   Needs some work; needs to know when the MCN is all zeros.
+ - Updated documentation about DVD drives.
+
+Version 0.12
+ - Just found out that BSDI actually has a cdctl(1) program :)  The only things
+   it does that my cdctl doesn't do are: print a hash code for the table of
+   contents, print the table of contents, and add an option to block until 
+   playing is complete.  BSDI's cdctl(1) hasn't been maintained for over three
+   years, so I think it's safe to take over the name.  BSDI guys, please drop me
+   a line if I'm missing something here...
+ - Added the ability to list the table of contents (-l)
+ - Added the ability to print individual table of contents entries (-t)
+ - Added the CDROMSTOP ioctl (-s)
+ - Fixed another bug with the cdrom finding hieuristic
+ - Talked to Jans, the cdrom driver maintainer, about DVD support and some other
+   things.  Looks like I'm going to be the new cdrom driver documentation guy :)
+ - Sent a note to linux-kernel about some of the structs in cdrom.c.  Maybe we
+   should start ripping all the old cruft out of the cdrom driver's data
+   structures now that we have 2.3...
+
+Version 0.11
+ - Updated documentation to mention the CDROM environment variable.  Thanks to
+   Thomas Soares <ttsoares@cedep.ifch.ufrgs.br> for pointing this out.
+ - Put my personal, not company address in the README
+ - Made the DVD part a little clearer
+ - Added NUTSANDBOLTS file 
+ - Fixed bug with cdrom seek hieuristic and open_cdrom() return values
+
+Version 0.10
+ - Added license.
+ - Added -g (cd_printstatus()) option to print cd status.
+ - Added stuff to the README.
+ - Added sndreset.pl, not tested.
+ - Tossed some more comments into the parsing code.
+ - First post to Freshmeat, woohoo!  I got hits from Xeroc Parc to Dow-Corning,
+   from Italy to France to Sweeden... I had no idea that Freshmeat was so
+   cosmopolitan :)
+
+Version 0.02
+
+ - Implemented many ioctls.
+ - Rewrote for getopt_long().
+ - Added sndreset utility to reset sound channel on machines with broken apm 
+ - Test version, not released.
+
+Version 0.01 (alpha)
+
+ - Test version, not released.
