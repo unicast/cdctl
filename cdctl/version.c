@@ -22,7 +22,7 @@
  * fixed in recent kernel headers.
  */
 
-static char vcid[] = "$Id: version.c,v 1.2 2000-04-11 09:19:58 thalakan Exp $\n";
+static char vcid[] = "$Id: version.c,v 1.3 2001-07-31 09:07:27 thalakan Exp $\n";
 
 #include <linux/cdrom.h>
 #include "cdctl.h"
@@ -55,6 +55,9 @@ void usage(void) {
 "-m     --mcn           print MCN (or UPC) of the cd in the drive\n"
 #ifdef CDROM_LOCKDOOR
 "-oA    --lockdoor=A    lOck or unlock the eject button\n"
+#endif
+#ifdef HAVE_DVD_IOCTLS
+"-n     --dvdinfo       Display info for DVD discs\n"
 #endif
 "-pT    --play=T        Play track T\n"
 "-r     --resume        Resume playing\n"

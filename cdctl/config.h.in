@@ -1,4 +1,4 @@
-/* config.h.in.  Generated automatically from configure.in by autoheader.  */
+/* config.h.in.  Generated automatically from configure.in by autoheader 2.13.  */
 
 /* Define to empty if the keyword does not work.  */
 #undef const
@@ -12,8 +12,20 @@
 /* Define if you have the strstr function.  */
 #undef HAVE_STRSTR
 
+/* Define if you have the <asm/cdrom.h> header file.  */
+#undef HAVE_ASM_CDROM_H
+
+/* Define if you have the <asm/ioctls.h> header file.  */
+#undef HAVE_ASM_IOCTLS_H
+
 /* Define if you have the <fcntl.h> header file.  */
 #undef HAVE_FCNTL_H
+
+/* Define if you have the <linux/cdrom.h> header file.  */
+#undef HAVE_LINUX_CDROM_H
+
+/* Define if you have the <linux/errno.h> header file.  */
+#undef HAVE_LINUX_ERRNO_H
 
 /* Define if you have the <malloc.h> header file.  */
 #undef HAVE_MALLOC_H
@@ -26,4 +38,8 @@
 
 /* The current version of cdctl */
 #undef VERSION
+
+/* Define if <linux/cdrom.h> has the DVD ioctls.
+		 */
+#undef HAVE_DVD_IOCTLS
 

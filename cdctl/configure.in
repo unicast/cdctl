@@ -14,10 +14,33 @@ dnl Checks for libraries.
 
 dnl Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS(fcntl.h malloc.h sys/ioctl.h unistd.h)
+
+dnl Make sure that asm/ioctls.h comes first to catch the case that the 
+dnl kernel headers aren't available or are symlinked to a Linux kernel
+dnl tree that hasn't been compiled yet.
+AC_CHECK_HEADERS(fcntl.h malloc.h)
+AC_CHECK_HEADERS(asm/ioctls.h,,
+	[
+	echo "You probably don't have your kernel headers installed right."
+	echo "Look at /usr/include/asm and make sure it's pointing to"
+	echo "include/asm in a valid kernel source tree.  You may have"
+	echo "to run 'make symlinks' or 'make config' to create the right"
+	echo "links."
+	exit 1
+	])
+
+AC_CHECK_HEADERS(asm/cdrom.h unistd.h linux/cdrom.h linux/errno.h sys/ioctl.h)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
+
+AC_EGREP_HEADER(
+	struct dvd_layer, linux/cdrom.h, [ 
+		AC_DEFINE(HAVE_DVD_IOCTLS, 1, 
+	   		  Define if <linux/cdrom.h> has the DVD ioctls.
+		)
+	]
+)	
 
 dnl Checks for library functions.
 AC_PROG_GCC_TRADITIONAL

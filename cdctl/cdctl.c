@@ -2,7 +2,7 @@
 	
 vim:ts=4
 
-$Id: cdctl.c,v 1.3 2000-05-05 03:41:10 thalakan Exp $ 
+$Id: cdctl.c,v 1.4 2001-07-31 09:07:27 thalakan Exp $ 
 
 2.0 patches by Andy Thaller <andy_thaller@physik.tu-muenchen.de>
 MSF patches by Jens Axboe <axboe@image.dk>
@@ -54,15 +54,15 @@ int main(int argc, char *argv[]) {
 	int cdrom = -1;
 	int option = 0; 
 
-	static char options[] = "ab:cd:eghiklmo::p::rst:u:v::V";
+	static char options[] = "ab:cd:eghiklmno::p::rst:u:v::V";
 	static struct option longoptions[] = {
-		{ "pause",			0,	NULL,	'a' },
+		{ "pause",	    0,	NULL,	'a' },
 		{ "speed",          1,  NULL,   'b' },
-		{ "close",			0,	NULL,	'c' },
+		{ "close",	    0,	NULL,	'c' },
 		{ "disc",           1,  NULL,   'd' },
-		{ "eject",			0,	NULL,	'e' },
+		{ "eject",	    0,	NULL,	'e' },
 		{ "getstatus",      0,  NULL,   'g' },
-		{ "help",			0,	NULL,	'h' },
+		{ "help",	    0,	NULL,	'h' },
 		{ "iso-header",     0,  NULL,   'i' },
 		{ "iso-header-hex", 0,  NULL,   '2' },
 
@@ -77,13 +77,16 @@ int main(int argc, char *argv[]) {
 #ifdef CDROM_CHANGER_NSLOTS
 		{ "numslots",       0,  NULL,   '1' },
 #endif
-		{ "play",			2,	NULL,	'p' },
-		{ "resume",			0,	NULL,	'r' },
-		{ "stop",			0,	NULL,	's' },
-		{ "tocentry",		1,	NULL,	't'	},
+#ifdef HAVE_DVD_IOCTLS
+		{ "dvdinfo",        0,  NULL,   'n' },
+#endif
+		{ "play",	    2,	NULL,	'p' },
+		{ "resume",	    0,	NULL,	'r' },
+		{ "stop",	    0,	NULL,	's' },
+		{ "tocentry",	    1,	NULL,	't' },
 		{ "autoclose",      1,  NULL,   'u' },
-		{ "volume", 		2,  NULL,   'v' },
-		{ "version",		0,	NULL,	'V' },
+		{ "volume", 	    2,  NULL,   'v' },
+		{ "version",	    0,	NULL,	'V' },
 	};
 
 	static struct action actions[] = {
@@ -226,6 +229,9 @@ int main(int argc, char *argv[]) {
 			break;
 		case 'm':
 			do_print_mcn(cdrom);
+			break;
+	        case 'n':
+			do_print_dvdinfo(cdrom);
 			break;
 		case 'u':
 			cd_set_autoeject(cdrom, atoi(optarg));
@@ -588,6 +594,205 @@ int do_play(int cdrom) {
 	
 	return cd_play(cdrom, tracks->cdth_trk0, tracks->cdth_trk1);
 }		
+
+
+int do_print_dvdinfo(int cdrom) {
+	int i;
+	int ret;
+	dvd_struct dvdinfo;
+
+	memset(&dvdinfo, 0, sizeof(dvd_struct));
+	ret = ioctl(cdrom, DVD_READ_STRUCT, &dvdinfo);
+	if(ret == -1) {
+		err(1, "couldn't read dvd info");
+	}
+	printf("Total layers: %i\n", dvdinfo.physical.layer[0].nlayers + 1);
+
+	memset(&dvdinfo, 0, sizeof(dvd_struct));
+	dvdinfo.physical.layer_num = 0;
+ 
+	ret = ioctl(cdrom, DVD_READ_STRUCT, &dvdinfo);
+	if(ret == -1) {
+		err(1, "couldn't read dvd info");
+	}
+
+	for(i = 0; i <= dvdinfo.physical.layer[0].nlayers; ++i) {
+		memset(&dvdinfo, 0, sizeof(dvd_struct));
+		dvdinfo.type = DVD_STRUCT_PHYSICAL;
+		dvdinfo.physical.layer_num = i;
+ 
+		ret = ioctl(cdrom, DVD_READ_STRUCT, &dvdinfo);
+		if(ret == -1) {
+			err(1, "couldn't read dvd info");
+		}
+
+		printf("*** Layer %i ***\n\n", i);
+		printf("book_version  : %i\n", 
+		       dvdinfo.physical.layer[i].book_version);
+		
+		printf("book_type     : %i ", dvdinfo.physical.layer[i].book_type);
+		switch(dvdinfo.physical.layer[i].book_type) {
+		case 0:
+			printf("(DVD-ROM)\n");
+			break;
+		case 1: 
+			printf("(DVD_RAM)\n");
+			break;
+		case 2: 
+			printf("(DVD_R)\n");
+			break;
+		case 3: 
+			printf("(DVD-RW)\n");
+			break;
+		case 9: 
+			printf("(DVD+RW)\n");
+			break;
+		default: 
+			printf("(reserved)\n");
+			break;
+		}
+
+		printf("min_rate      : %i ",
+		       dvdinfo.physical.layer[i].min_rate);
+
+		switch(dvdinfo.physical.layer[i].min_rate) {
+		case 0:
+			printf("(2.52Mbps)\n");
+			break;
+		case 1:
+			printf("(5.04Mbps)\n");
+			break;
+		case 2:
+			printf("(10.08Mbps)\n");
+			break;
+		case 15:
+			printf("(none specified)\n");
+			break;
+		default:
+			printf("(reserved)\n");
+			break;
+		}
+
+		printf("disc_size     : %i ",
+		       dvdinfo.physical.layer[i].disc_size);
+		switch(dvdinfo.physical.layer[i].disc_size) {
+		case 0: 
+			printf("(120mm disc)\n");
+			break;
+		case 1: 
+			printf("(80mm disc)\n");
+			break;
+		default:
+			printf("(reserved)\n");
+			break;
+		}
+
+		printf("layer_type    : %i ", 
+		       dvdinfo.physical.layer[i].layer_type);
+		switch(dvdinfo.physical.layer[i].layer_type) {
+		case 0:
+			printf("(embossed area)\n");
+			break;
+		case 1:
+			printf("(recordable area)\n");
+			break;
+		case 2:
+			printf("(re-writable area)\n");
+			break;
+		case 3:
+			printf("(reserved)\n");
+			break;
+		}
+
+		printf("track_path    : %i ",
+		       dvdinfo.physical.layer[i].track_path);
+		switch(dvdinfo.physical.layer[i].track_path) {
+		case 0: 
+			printf("(PTP dual layer or single layer)\n");
+			break;
+		case 1: 
+			printf("(OTP)\n");
+			break;
+		default:
+			printf("(reserved)\n");
+			break;
+		}
+
+		printf("nlayers       : %i ",
+		       dvdinfo.physical.layer[i].nlayers);
+		switch(dvdinfo.physical.layer[i].nlayers) {
+		case 0:
+			printf("(one layer)\n");
+			break;
+		case 1:
+			printf("(two layers)\n");
+			break;
+		default:
+			printf("(reserved)\n");
+			break;
+		}
+
+		printf("track_density : %i ",
+		       dvdinfo.physical.layer[i].track_density);
+		switch(dvdinfo.physical.layer[i].track_density) {
+		case 0:
+			printf("(0.74 micrometers/track)\n");
+			break;
+		case 1:
+			printf("(0.80 micrometers/track)\n");
+			break;
+		case 2:
+			printf("(0.615 micrometers/track)\n");
+			break;
+		default:
+			printf("(reserved)\n");
+			break;
+		}
+
+		printf("linear_density: %i ",
+		       dvdinfo.physical.layer[i].track_density);
+		switch(dvdinfo.physical.layer[i].track_density) {
+		case 0:
+			printf("(0.267 micrometers/bit)\n");
+			break;
+		case 1:
+			printf("(0.293 micrometers/bit)\n");
+			break;
+		case 2:
+			printf("(0.409~0.435 micrometers/bit)\n");
+			break;
+		case 4:
+			printf("(0.280~0.291 micrometers/bit)\n");
+			break;
+		case 8:
+			printf("(0.353 micrometers/bit)\n");
+			break;
+		default:
+			printf("(reserved)\n");
+			break;
+
+		}
+
+		printf("bca           : %i %s\n",
+		       dvdinfo.physical.layer[i].bca,
+		       dvdinfo.physical.layer[i].bca ? 
+		       "(bca present)" : "(no bca)"
+		       );
+
+		printf("start_sector  : %i (0x%x)\n", 
+		       dvdinfo.physical.layer[i].start_sector, 
+		       dvdinfo.physical.layer[i].start_sector);
+
+		printf("end_sector    : %i (0x%x)\n",
+		       dvdinfo.physical.layer[i].end_sector,
+		       dvdinfo.physical.layer[i].end_sector);
+
+		printf("end_sector_l0 : %i (0x%x)\n",
+		       dvdinfo.physical.layer[i].end_sector_l0,
+		       dvdinfo.physical.layer[i].end_sector_l0);
+	}
+	return 1;
+}
 
 
 struct cdrom_tochdr *do_get_audio_tracks(int cdrom) {

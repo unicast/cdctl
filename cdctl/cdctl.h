@@ -68,6 +68,7 @@ extern int                     do_print_mcn(int cdrom);
 extern int                     do_dump_header(int cdrom, int hex);
 extern int                     do_print_status(int cdrom);
 extern int                     do_print_volume(int cdrom);
+extern int                     do_print_dvdinfo(int cdrom);
 extern char *                  do_parse_iso_date(char *date);
 extern int                     do_print_capabilities(int cdrom);
 extern int                     do_set_volume(int cdrom, char *input);
