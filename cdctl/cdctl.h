@@ -1,10 +1,11 @@
-#define VERSION "cdctl 0.14-devel"
+#define VERSION "cdctl 0.15"
 
 /* 
  * rt == red tape, async signal handling in C, arrrgggggghhhhhhhh
  *
  * struct rt is a element in a linked list.   There is a global pointer
- * to the last one, global struct rt *last_rt;.  
+ * to the last one, global struct rt *last_rt;.
+ * FIXME: not quite implemented yet...
  */
 
 struct rt {      
@@ -71,7 +72,7 @@ extern int                     do_print_tocentry(int cdrom, int track);
 extern void *                  do_get_block(int fd, int offset, int len);
 
 /*
- * my dinky API
+ * my dinky cd/dvd drive API
  */
 
 extern int is_empty(int cdrom);

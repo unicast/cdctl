@@ -52,7 +52,7 @@ commit: clean
 	cvs commit
 
 dist: clean
-	cd .. && tar czvf cdctl­0.15.tar.gz cdctl 
+	cd .. && tar czvf cdctl­0.15.tar.gz cdctl
 
 dist-devel: clean
 	cd .. && tar czvf cdctl-devel.tar.gz cdctl
