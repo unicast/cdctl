@@ -3,17 +3,23 @@ CFLAGS=-Wall -g
 BINS=cdctl sndreset
 OBJS=cdctl.o version.o ioctls.o iso_header.o
 DOCS=NEWS NUTSANDBOLTS LICENSE PUBLICKEY README SEGFAULTS
+# NOTE:  all man pages are installed in $(mandir)/man1 -- see install-mans
 MANS=cdctl.1
 MOS=cdctl.mo
+
+prefix = @prefix@
+exec_prefix = @exec_prefix@
 
 bindir = @bindir@
 mandir = @mandir@
 datadir = @datadir@
+docdir = @docdir@
 
 # FIXME: autoconf needs to generate this
 
 localedir = /usr/share/locale
 INSTALL = @INSTALL@
+INSTALL_DIR = $(INSTALL) -d
 INSTALL_DATA = $(INSTALL) -m 644
 
 all: $(BINS)
@@ -29,32 +35,42 @@ iso_header.o: iso_header.c
 install: install-bins install-docs install-mans install-mos
 
 install-bins: $(BINS)
+	$(INSTALL_DIR) $(bindir)
 	$(INSTALL) -s $(BINS) $(bindir)
 
 install-docs: $(DOCS)
-	$(INSTALL_DATA) $(DOCS) $(datadir)
+	$(INSTALL_DIR) $(docdir)
+	$(INSTALL_DATA) $(DOCS) $(docdir)
 
 install-mans: $(MANS)
-	$(INSTALL_DATA) $(MANS) $(mandir)
+	$(INSTALL_DIR) $(mandir)/man1
+	$(INSTALL_DATA) $(MANS) $(mandir)/man1
 
 # FIXME: need to deal with other languages besides German
 
 install-mos: cdctl.mo
+	$(INSTALL_DIR) $(localedir)/de/LC_MESSAGES
 	$(INSTALL_DATA) $(MOS) $(localedir)/de/LC_MESSAGES
 
 cdctl.mo: cdctl.po
 	msgfmt cdctl.po -o cdctl.mo
 
 clean:
-	rm -f $(OBJS) $(BINS) config.cache config.log config.status Makefile *~
+	rm -f $(OBJS) $(BINS)
+
+distclean: clean
+	rm -f config.cache config.log config.status Makefile config.h *~
 
 commit: clean
 	cvs commit
 
-dist: clean
-	cd .. && tar czvf cdctl­0.15.tar.gz cdctl
+rpms: distclean
+	cd .. && tar czvf cdctl-@VERSION@.tar.gz cdctl
+	rpm -ta --target=i386 ../cdctl-@VERSION@.tar.gz
 
-dist-devel: clean
-	cd .. && tar czvf cdctl-devel.tar.gz cdctl
+dist: distclean rpms
+	cd .. && tar czvf cdctl­@VERSION@.tar.gz cdctl
+
+dist-devel: distclean dist
 #	gpg --detach-sign ../cdctl-devel.tar.gz 
 	scp ../cdctl-devel.tar.gz* NEWS root@host30.frys.com:/home/thalakan/cdctl

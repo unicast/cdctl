@@ -1,6 +1,11 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(cdctl.c)
 
+dnl JRS: this is where THE version for cdctl is stored.  
+VERSION="0.16"
+AC_DEFINE(VERSION, "$VERSION", The current version of cdctl)
+AC_SUBST(VERSION)
+
 dnl Checks for programs.
 AC_PROG_CC
 AC_PROG_INSTALL
@@ -19,4 +24,19 @@ AC_PROG_GCC_TRADITIONAL
 AC_TYPE_SIGNAL
 AC_CHECK_FUNCS(strstr)
 
-AC_OUTPUT(Makefile)
+dnl Where to put the documentation (NEWS, INSTALL, etc.)
+AC_MSG_CHECKING(where to put the documentation)
+AC_ARG_WITH(docdir,
+	[  --with-docdir=PATH      Where to put the documentation [PREFIX/doc/cdctl]],
+	[cdctl_cv_docdir=$withval],
+	[	AC_CACHE_VAL(cdctl_cv_docdir,
+			cdctl_cv_docdir='${prefix}/doc/cdctl'
+			)
+	])
+docdir=$cdctl_cv_docdir
+AC_MSG_RESULT($docdir)
+AC_SUBST(docdir)
+
+AC_CONFIG_HEADER(config.h)
+
+AC_OUTPUT(Makefile cdctl.spec)

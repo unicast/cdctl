@@ -1,4 +1,4 @@
-#define VERSION "cdctl 0.15"
+#include "config.h"           /* cdctl config header */
 
 /* 
  * rt == red tape, async signal handling in C, arrrgggggghhhhhhhh

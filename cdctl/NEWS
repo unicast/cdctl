@@ -1,3 +1,11 @@
+Version 0.16
+ - Matthew Clarke <Matthew_Clarke@mindlink.bc.ca> fixed a problem with
+   the memory allocation of a variable in the volume setting code.
+ - Better packaging, man page updates.
+ - "make rpms" works now, if you have rpm configured correctly.
+ - 
+ 
+
 Version 0.15
  - Fixed an option parsing bug
  - 2.0 support by Andy Thaller <andy_thaller@physik.tu-muenchen.de>
@@ -22,9 +30,7 @@ Version 0.15
  - NOTE THAT CAPABILITY READBACK IS BROKEN IN 2.2 ON ATAPI DRIVES, says Jens
    Axboe, the kernel cdrom maintainer. 
  - Granted permission to Debian to make a package for commercial distribution.
- - Does anyone know how to make RPMS?  Mail thalakan@technologist.com if you
-   do.
-   
+  
 Version 0.14
  - Updated version.c and the usage message; thanks to Andy Piper
    <andyp@argonet.co.uk> for the diff.

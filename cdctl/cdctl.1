@@ -1,4 +1,4 @@
-.TH  CDCTL 1 "March 25, 1999"
+.TH  CDCTL 1 "April 5, 2000"
 
 .\" defines cdctl with formatting
 .ds cd \fIcdctl\fP
@@ -182,7 +182,11 @@ it.
 .TP
 .I "\-vV, \-\-volume=V"
 Prints out the current volume if V is not given, otherwise sets the current
-volume to V.  
+volume to V.  If V is given, it may be a single number, to set both CD-ROM
+channels to that volume, or two numbers (separated by a colon (:), hyphen
+(-), or space,) to set each channel independently.  For kernels that
+support 4 channels in the CD-ROM volume control ioctl, cdctl will report
+on all four, but set only the first two.
 .TP
 .I "\-V, \-\-version"
 Prints out the current version of cdctl.
@@ -212,6 +216,12 @@ Andy Thaller <andy_thaller@physik.tu-muenchen.de>, 2.0 support and checks for
 the DRIVE_NOT_FOUND error message, which inspired kernel capability checking
 using the preprocessor,
 
+Andy Piper <andyp@argonet.co.uk> for a usage message bug report, being
+a sounding board, and lots of patches,
+
+Matthew Clarke <Matthew_Clarke@mindlink.bc.ca>, for a big patch which
+fixed many oversights on my part,
+
 Beat Rupp <beat.rupp@gmx.net> for DVD testing and some German localization,
 
 Gabor Z Papp <gzp@gzp.org.hu> for testing the jukebox code on his NEC 4x4 ATAPI
@@ -220,8 +230,6 @@ English,
 
 Dan Morrison <dmorriso@buffalo.edu> for testing on an ATAPI system,
 
-Andy Piper <andyp@argonet.co.uk> for a usage message bug report and a patch,
-
 Nick <nikk@phreaker.net> for helping to get the autoeject (-u option) working
 correctly, 
 
@@ -229,7 +237,7 @@ Thomas Soares <ttsoares@cedep.ifch.ufrgs.br> for working to get the command
 line / CDROM env variable logic working right, 
 
 Fry's Electronics Black Ops <http://host30.frys.com/febo> for hosting the site,
-hiring the maintainers, and providing a DS-1 to work on, and 
+hiring the maintainers, and providing a DS-3 to work on, and 
 
 Jason Spence <thalakan@technologist.com>.  He currently maintains the cdctl
 source at \fIhttp://host30.frys.com/cdctl\fP in his spare time.  Thanks to the

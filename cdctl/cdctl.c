@@ -2,7 +2,7 @@
 	
 vim:ts=4
 
-$Id: cdctl.c,v 1.1 2000-03-27 01:06:54 thalakan Exp $ 
+$Id: cdctl.c,v 1.2 2000-04-11 09:19:58 thalakan Exp $ 
 
 2.0 patches by Andy Thaller <andy_thaller@physik.tu-muenchen.de>
 MSF patches by Jens Axboe <axboe@image.dk>
@@ -167,15 +167,19 @@ if (cdrom == -1) {
 	return 1;
 }
 
-/*
- * A symlink to cdctl named eject will trigger this code.
+/* 
+ * Various possibilities for symlinks to trigger eject or close		 
  */
-
-if(strstr(argv[0], "eject") != NULL) {
+if ((strstr(argv[0], "eject") != NULL) || (strstr(argv[0], "open") != NULL)) {
 	cd_eject(cdrom);
 	exit(0);
 }
-
+		 		 
+if ((strstr(argv[0], "shut") != NULL) || (strstr(argv[0], "close") != NULL)) {
+	cd_close(cdrom);
+	exit(0);
+}
+ 		  		 
 /* Ok, it's open or we're dead.  Proceed. */
 
 	switch(option) {
@@ -393,8 +397,8 @@ int do_set_volume(int cdrom, char *input) {
 	
 	struct cdrom_volctrl *volume;
 	const char delim[] = ":- ";
-	char *one; 
-	char *two;
+	char *one = (char *)NULL;	/* initialized here because unconditionally */
+	char *two = (char *)NULL;	/* freed below, even if never allocated */
 	char *tmp;
 
 
@@ -414,8 +418,8 @@ int do_set_volume(int cdrom, char *input) {
 	
 	/* 
      * Ok, we're going to assume that the user doesn't want the volume
-	 * changed if we get a wierd argument.  If *I* screwed up and
-	 * entered a wierd argument, I know I wouldn't want my sound system to
+	 * changed if we get a weird argument.  If *I* screwed up and
+	 * entered a weird argument, I know I wouldn't want my sound system to
 	 * suddenly cut out or jump to maximum volume!
      */
 
@@ -441,8 +445,13 @@ int do_set_volume(int cdrom, char *input) {
 		printf("DEBUG: do_set_volume(): two is %i\n", atoi(two));
 	}
 
+	/* If only one volume given, set it on both channels. */
 	if(two != NULL) {
 		volume->channel1 = atoi(two);
+	} else {
+		if (one != NULL) {
+			volume->channel1 = atoi(one);
+		}
 	}
 	
 	free(one);

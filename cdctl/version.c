@@ -1,3 +1,4 @@
+#include "config.h"     /* cdctl config header */
 #include <stdio.h>		/* standard libs */
 
 #ifndef _LINUX_TYPES_H
@@ -21,22 +22,15 @@
  * fixed in recent kernel headers.
  */
 
+static char vcid[] = "$Id: version.c,v 1.2 2000-04-11 09:19:58 thalakan Exp $\n";
+
 #include <linux/cdrom.h>
 #include "cdctl.h"
-
-/*
- * The GNU coding standards say that you're supposed to give only the program
- * name and version, but I want the CVS Id as well.  Linus says we should
- * burn the coding standards anyway.
- */
-
-static char vcid[] = "$Id: version.c,v 1.1 2000-03-27 01:06:54 thalakan Exp $";
 
 void version(void) {
 	printf("%s\n", VERSION);
 	printf("%s\n", vcid);
 }
-
 	
 /*
  * I really wish there was a command like perl's qw// to deal with

@@ -1,5 +1,5 @@
 %define name cdctl
-%define version 0.16
+%define version @VERSION@
 %define release 1
 
 Summary: Controls your cdrom drive.

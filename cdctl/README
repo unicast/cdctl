@@ -1,6 +1,6 @@
 cdctl README
 
-Last updated on Sat Mar 25 2000
+Last updated on Tue Apr 11 2000
 
 Hi, thanks for trying out cdctl.  I hope you find it useful.  cdctl is a program
 to control your cdrom drive under Linux, and hopefully many other UNIXes in the
@@ -64,7 +64,7 @@ flag causes it to exhibit both behaviours.
 If you're the paranoid type, you can verify that this REALLY IS cdctl and
 not some nefarious subversion of the open source development system by
 importing my public key, getting the digital signature of the tarball at 
-http://host30.frys.com/cdctl/cdctl-latest.tar.gz.sig, and verifying the digital
+http://cdctl.sourceforge.net/cdctl-latest.tar.gz.sig, and verifying the digital
 signature matches up with my key.  You can get my public key from the file
 PUBLICKEY in this distribution, by fingering thalakan@host30.frys.com, or from
 pgpkeys.mit.edu.  This should be a simple as

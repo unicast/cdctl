@@ -15,7 +15,7 @@
 
 #include "cdctl.h"
 
-/* 	$Id: iso_header.c,v 1.1 2000-03-27 01:06:54 thalakan Exp $	 */
+/* 	$Id: iso_header.c,v 1.2 2000-04-11 09:19:58 thalakan Exp $	 */
 
 /*
  * Types of values we find in the ISO 9660 headers for struct iso_header
@@ -48,12 +48,12 @@ int do_dump_header(int cdrom, int hex) {
 	 char * s;                           /* s is for string */ 
 	 struct iso_header_entry * current;  /* current is for current entry */
 	 struct iso_header_entry iso_header[] = {
-		  { "First Volume Descriptor", 0x8000, 1,   ISO_VOLDESC },
-		  { "Volume ID              ", 0x8001, 6,   ISO_VOLID   },
-		  { "System ID              ", 0x8008, 31,  ISO_TEXT    },
-		  { "Application ID         ", 0x823e, 127, ISO_TEXT    },
-		  { "Volume Set ID          ", 0x827f, 127, ISO_TEXT    },
-          { "Preparer ID            ", 0x81be, 127, ISO_TEXT    },
+		  { "First Volume Descriptor", 0x8000, 1,    ISO_VOLDESC },
+		  { "Volume ID              ", 0x8001, 6,    ISO_VOLID   },
+		  { "System ID              ", 0x8008, 0x1f, ISO_TEXT    },
+		  { "Application ID         ", 0x823e, 0x7f, ISO_TEXT    },
+		  { "Volume Set ID          ", 0x827f, 0x7f, ISO_TEXT    },
+          { "Preparer ID            ", 0x81be, 0x7f, ISO_TEXT    },
 		  { NULL, 0, 0, 0 },
      };
 
