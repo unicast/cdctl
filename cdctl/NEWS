@@ -3,7 +3,7 @@ Version 0.16
    the memory allocation of a variable in the volume setting code.
  - Better packaging, man page updates.
  - "make rpms" works now, if you have rpm configured correctly.
- - 
+ - Removed CDC_IOCTLS, which doesn't exist in the kernel headers anymore.
  
 
 Version 0.15
