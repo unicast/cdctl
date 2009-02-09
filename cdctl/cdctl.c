@@ -2,7 +2,7 @@
 	
 vim:ts=4
 
-$Id: cdctl.c,v 1.4 2001-07-31 09:07:27 thalakan Exp $ 
+$Id: cdctl.c,v 1.5 2009-02-09 00:36:27 thalakan Exp $ 
 
 2.0 patches by Andy Thaller <andy_thaller@physik.tu-muenchen.de>
 MSF patches by Jens Axboe <axboe@image.dk>
@@ -352,7 +352,6 @@ int do_print_capabilities(int cdrom) {
 	printf("Can report media change: %i\n", (ret & CDC_MEDIA_CHANGED)?1:0);
 	printf("Can play audio discs   : %i\n", (ret & CDC_PLAY_AUDIO)?1:0);
 	printf("Can do a hard reset    : %i\n", (ret & CDC_RESET)?1:0);
-	printf("Has non-standard ioctls: %i\n", (ret & CDC_IOCTLS)?1:0);
 	printf("Can report drive status: %i\n", (ret & CDC_DRIVE_STATUS)?1:0);
 
 #ifdef CDROM_CHANGER_NSLOTS
