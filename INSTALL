@@ -1,0 +1,11 @@
+autoheader
+automake
+./configure
+make
+make install
+
+# lock eject button
+cdctl --lockdoor=1 /dev/sr0
+
+# unlock eject button
+cdctl --lockdoor=0 /dev/sr0
